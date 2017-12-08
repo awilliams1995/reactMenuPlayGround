@@ -1,46 +1,10 @@
 import React,{Component} from "react";
+import menuData from "./testMenuData"
+import belowInfoValue from "./belowInfo"
 
 class menu extends Component {
 	state ={
-		menu:[
-			{
-				itemName:"cheeseBurger",
-				price: 5,
-				showInput:false,
-				review:'',
-				specialMessage:false
-			},{
-				itemName:"soufle",
-				price: 7,
-				showInput:false,
-				review:'',
-				specialMessage:false
-			},{
-				itemName:"pizza",
-				price: 9,
-				showInput:false,
-				review:'',
-				specialMessage:false
-			},{
-				itemName:"salad",
-				price: 8,
-				showInput:false,
-				review:'',
-				specialMessage:false
-			},{
-				itemName:"pumpkin pie",
-				price: 4,
-				showInput:false,
-				review:'',
-				specialMessage:false
-			},{
-				itemName:"mashed potatoes",
-				price: 6,
-				showInput:false,
-				review:'',
-				specialMessage:false
-			}
-		]
+		menu:menuData
 	}
 	reviewItemHandler = (item)=>{
 		this.setState({
@@ -70,8 +34,18 @@ class menu extends Component {
 		})
 		}, 600)
 	}
+
+	showReviews = (item)=>{
+		this.setState({
+			menu:this.state.menu.map((itemValue)=>{
+				return itemValue.itemName !== item ? itemValue: {...itemValue,showReviews:true}
+			})
+		})
+	}
+
 	render(){
 		console.log(this.state.menu)
+		const belowInfo = belowInfoValue
 		return(
 			<div>
 				{this.state.menu.map((item)=>{
@@ -83,32 +57,18 @@ class menu extends Component {
 						<p style={{padding:"10px"}}>
 							Price: {item.price.toFixed(2)}
 						</p>
-							{this.props.reviewedItems.includes(item.itemName)?<button style={{padding:"10px", margin:"5px"}} onClick={()=>this.reviewItemHandler(item.itemName)}>Review this item?</button>:null}
-						<br/>
-						{	item.showInput?
-								(
-								<div>
-									<textarea
-									onChange={(event)=>this.reviewChangeHandler(item.itemName,event.target.value)} 
-									style={{padding:"10px", margin:"5px"}}
-									placeholder="Write your review here">
-									{item.review}
-									</textarea>
-									<br/>
-									<button style={{padding:"10px", margin:"5px"}}
-									 onClick={()=>this.emptyField(item.itemName)}>
-										submit
-									</button>
-								</div>
-								)
-								:
-								null
-						}
-							{
-								item.specialMessage?<p>Thank You!</p>:null
-							}
+						{item.showReviews?item.reviews.map((reviewValue)=>
+							(<div key={Date.now()+ Math.random()+Math.random()}>
+							<div style={{boxShadow:"0px 0.5px 0.5px",padding:"10px", margin:"5px",backgroundColor:"pink"}}>
+							<p style={{fontWeight:"bold"}}>{reviewValue.user}</p>
+							<p>{reviewValue.review}</p>
+							</div>
+							
+							</div>
+							)):belowInfo(item,this)}
 						</div>)
-				})}
+						}
+				)}
 			</div>
 
 			)
